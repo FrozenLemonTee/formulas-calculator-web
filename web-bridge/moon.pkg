@@ -1,0 +1,14 @@
+import {
+  "FrozenLemonTee/formulas-calculator" @fc,
+}
+
+supported_targets = "js"
+
+options(
+  link: {
+    "js": {
+      "exports": [ "list_json", "show_json", "calc_json" ],
+      "format": "esm",
+    },
+  },
+)
