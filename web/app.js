@@ -13,11 +13,30 @@ const exampleButtons = document.querySelectorAll("[data-example]");
 
 const defaults = {
   force: { mass: "2 kg", acceleration: "3 m/s^2" },
-  "ohm-voltage": { current: "2 A", resistance: "3 Ohm" },
+  work: { force: "10 N", distance: "3 m" },
+  power: { work: "120 J", time: "4 s" },
   "kinetic-energy": { mass: "2 kg", velocity: "3 m/s" },
+  torque: { force: "10 N", lever_arm: "2 m" },
+  "rotational-work": { torque: "10 J/rad", angle: "2 rad" },
+  "ohm-voltage": { current: "2 A", resistance: "3 Ohm" },
+  "electric-power": { voltage: "12 V", current: "2 A" },
+  "joule-heating-power": { current: "3 A", resistance: "4 Ohm" },
+  "electric-charge": { current: "2 A", time: "30 s" },
+  "electric-energy": { power: "100 W", time: "3 s" },
   "sensible-heat": {
     mass: "2 kg",
     specific_heat: "4186 J/(kg*K)",
+    temperature_difference: "10 K",
+  },
+  "conduction-heat-rate": {
+    thermal_conductivity: "200 W/(m*K)",
+    area: "2 m^2",
+    temperature_difference: "10 K",
+    thickness: "0.4 m",
+  },
+  "convection-heat-rate": {
+    heat_transfer_coefficient: "25 W/(m^2*K)",
+    area: "2 m^2",
     temperature_difference: "10 K",
   },
 };
@@ -105,18 +124,29 @@ function renderResult(payload) {
   result.textContent = payload.ok ? payload.value : payload.error;
 }
 
-function inputBindings() {
+function currentInputValues() {
   const data = new FormData(form);
-  return currentInputs
-    .map((input) => `${input.name}=${String(data.get(input.name) || "").trim()}`)
-    .join("\n");
+  return currentInputs.map((input) => ({
+    name: input.name,
+    value: String(data.get(input.name) || "").trim(),
+  }));
+}
+
+function inputBindings(values) {
+  return values.map((input) => `${input.name}=${input.value}`).join("\n");
 }
 
 function calculateCurrent() {
   if (!selected) {
     return;
   }
-  renderResult(parsePayload(calc_json(selected, inputBindings(), selectedFormat())));
+  const values = currentInputValues();
+  const missing = values.filter((input) => input.value === "").map((input) => input.name);
+  if (missing.length > 0) {
+    renderResult({ ok: false, error: `Enter values for: ${missing.join(", ")}` });
+    return;
+  }
+  renderResult(parsePayload(calc_json(selected, inputBindings(values), selectedFormat())));
 }
 
 function selectFormula(name) {
