@@ -1,6 +1,6 @@
 name = "FrozenLemonTee/formulas-calculator-web"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.md"
 
@@ -15,5 +15,5 @@ preferred_target = "js"
 description = "A lightweight MoonBit-powered web interface for formulas-calculator."
 
 import {
-  "FrozenLemonTee/formulas-calculator@0.1.0",
+  "FrozenLemonTee/formulas-calculator@0.1.1",
 }
