@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>formulas-calculator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LunarFormulas Web</p>
+          <h1>formulas-calculator</h1>
+        </div>
+        <fieldset class="format-control" aria-label="Output format">
+          <label><input type="radio" name="format" value="ascii" checked /> ASCII</label>
+          <label><input type="radio" name="format" value="si" /> SI</label>
+          <label><input type="radio" name="format" value="latex" /> LaTeX</label>
+        </fieldset>
+      </header>
+
+      <section class="workspace" aria-label="Formula calculator">
+        <aside class="formula-pane">
+          <label class="search-label" for="formula-search">Formula</label>
+          <input id="formula-search" type="search" placeholder="Search" autocomplete="off" />
+          <div id="formula-list" class="formula-list" aria-label="Available formulas"></div>
+        </aside>
+
+        <section class="calculator-pane" aria-labelledby="formula-title">
+          <div class="formula-summary">
+            <div>
+              <p id="formula-domain" class="domain"></p>
+              <h2 id="formula-title"></h2>
+            </div>
+            <code id="formula-equation"></code>
+          </div>
+
+          <pre id="formula-details" class="details"></pre>
+
+          <form id="calc-form" class="input-grid"></form>
+
+          <div class="actions">
+            <button id="calculate" type="button">Calculate</button>
+            <div class="examples" aria-label="Examples">
+              <button type="button" data-example="force">Force</button>
+              <button type="button" data-example="ohm-voltage">Ohm</button>
+              <button type="button" data-example="kinetic-energy">Energy</button>
+            </div>
+          </div>
+
+          <output id="result" class="result" aria-live="polite"></output>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
