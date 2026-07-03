@@ -1,0 +1,60 @@
+name: Deploy demo to Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Set up MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Build web bridge
+        run: |
+          moon version --all
+          moon update
+          moon build web-bridge --target js
+
+      - name: Prepare static demo
+        run: |
+          mkdir -p dist/_build/js/debug/build/web-bridge
+          cp web/index.html web/app.js web/styles.css dist/
+          cp _build/js/debug/build/web-bridge/web-bridge.js* dist/_build/js/debug/build/web-bridge/
+          sed -i 's#../_build/js/debug/build/web-bridge/web-bridge.js#./_build/js/debug/build/web-bridge/web-bridge.js#g' dist/app.js
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
